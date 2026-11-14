@@ -4,15 +4,8 @@ A personal workout, cutting and progress tracker for one person. It runs offline
 
 ## Run it
 
-```bash
-npm install
-npm run dev        # http://localhost:5173
-npm test           # unit tests for the pure functions
-npm run build      # typecheck + production build with service worker
-npm run preview    # serve the production build (needed to test offline/install)
-```
-
-To install it on a phone, deploy `dist/` to any static HTTPS host (Netlify, Vercel, GitHub Pages, Cloudflare Pages), open the URL, and choose **Add to Home Screen**. After the first load it works fully offline.
+Deployed on netlify - https://healthx-fy99.netlify.app/
+1.Open this link in chrome on your phone and using the 3 dots install on your device and enjoy your workouts.
 
 ## Screens
 
