@@ -4,8 +4,11 @@ A personal workout, cutting and progress tracker for one person. It runs offline
 
 ## Run it
 
-Deployed on netlify - https://healthx-fy99.netlify.app/\
-1.Open this link in chrome on your phone and using the 3 dots install on your device and enjoy your workouts.
+Deployed on Netlify: https://healthx-fy99.netlify.app/
+
+1. Open this link in Chrome on your phone.
+2. Tap the 3 dots (⋮) and choose **Install app**.
+3. Enjoy your workouts!
 
 ## Screens
 
