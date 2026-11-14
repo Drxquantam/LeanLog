@@ -113,14 +113,3 @@ scripts/       make-icons.mjs creates the PNG app icons with no dependencies
 **Program edits**
 - Edits are made with the ✎ button inside a day's workout and apply to that workout from then on (e.g. every Back A day). Changing an exercise moves any sets already entered that day to the new exercise. Edits are saved as overrides in `Settings.program`, keyed by workout (`CS-A` … `LT-B`, plus `ABS`), and user-made exercises go in `Settings.customExercises`. Any block you haven't edited keeps using the built-in default, and both fields are included in backups.
 - Editing a workout changes it for every day that uses it. Sets already logged are never deleted. If a past day has sets for an exercise that has since been removed from the plan, they appear under "Also logged" on that day.
-
-## Testing notes
-
-- `npm test` runs 49 unit tests: e1RM, volume, top set, PR detection, moving average, weekly rate and pace, schedule, day status, per-week counts, backup round-trip/validation, plus streak rules, tier thresholds, the daily quote rotation, and program overrides, custom exercises and their backup validation, and the rotation schedule.
-- Each milestone was checked in a browser at 390 px wide, and the 720 px desktop column and light theme were checked too. In the production preview, the manifest, the active service worker and the precached fonts were all confirmed.
-- I couldn't run Lighthouse in my build environment (headless Chrome wouldn't start in the sandbox). To run it yourself:
-  ```bash
-  npm run build && npm run preview
-  npx lighthouse http://localhost:4173 --form-factor=mobile --view
-  ```
-  Note: Lighthouse 12 removed the separate "PWA" category. Installability now shows up in Chrome DevTools → Application → Manifest.
