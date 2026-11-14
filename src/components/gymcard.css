@@ -1,0 +1,411 @@
+/* ===== Gym card: 3D floating membership card with tier materials =====
+   The app's "no gradients" rule applies to UI chrome; the card is a physical
+   object, so its metals and foils are rendered with gradients on purpose. */
+
+@property --gc-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gc-stage {
+  --w: min(380px, calc(100vw - 40px));
+  position: relative;
+  width: var(--w);
+  margin: 0 auto;
+  padding: 22px 0 40px;
+  perspective: 1100px;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.gc-float {
+  transform-style: preserve-3d;
+  animation: gc-float 6s ease-in-out infinite;
+}
+@keyframes gc-float {
+  0%, 100% { transform: translateY(0) rotateX(5deg) rotateY(-7deg); }
+  50% { transform: translateY(-12px) rotateX(-3deg) rotateY(7deg); }
+}
+.gc-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  width: var(--w);
+  aspect-ratio: 1.586;
+  border-radius: calc(var(--w) * 0.055);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 600ms cubic-bezier(.2, .8, .2, 1);
+  color: var(--gc-ink);
+}
+.gc-card[data-active] { transition: transform 90ms linear; }
+
+.gc-material, .gc-foil, .gc-grain, .gc-shine, .gc-sparks, .gc-aura {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.gc-material {
+  background: var(--gc-bg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .45),
+    inset 0 -1px 0 rgba(0, 0, 0, .4),
+    0 1px 0 rgba(255, 255, 255, .05),
+    0 30px 60px -20px rgba(0, 0, 0, .7);
+}
+.gc-grain {
+  background: repeating-linear-gradient(100deg, rgba(255, 255, 255, .05) 0 1px, transparent 1px 3px);
+  mix-blend-mode: overlay;
+}
+.gc-shine {
+  background: radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, .6), rgba(255, 255, 255, .14) 24%, transparent 55%);
+  mix-blend-mode: overlay;
+}
+.gc-shadow {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 8px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, .6), transparent);
+  filter: blur(4px);
+  animation: gc-shadow 6s ease-in-out infinite;
+}
+@keyframes gc-shadow {
+  0%, 100% { transform: scaleX(1); opacity: .9; }
+  50% { transform: scaleX(.82); opacity: .55; }
+}
+
+/* ---------- Content ---------- */
+.gc-content {
+  position: absolute;
+  inset: 0;
+  padding: calc(var(--w) * .065) calc(var(--w) * .07);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: translateZ(36px);
+  font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.gc-top, .gc-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+.gc-top { align-items: center; }
+.gc-brand { font-weight: 700; font-size: calc(var(--w) * .043); letter-spacing: .22em; opacity: .8; }
+.gc-tier {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--w) * .015);
+  font-weight: 700;
+  font-size: calc(var(--w) * .056);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.gc-mark { width: calc(var(--w) * .07); height: calc(var(--w) * .07); stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.gc-mark-dot { fill: currentColor; stroke: none; }
+.gc-mid { display: flex; align-items: center; gap: calc(var(--w) * .05); }
+.gc-emblem { width: calc(var(--w) * .2); height: calc(var(--w) * .2); flex-shrink: 0; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .35)); }
+.gc-emblem-ring { fill: rgba(0, 0, 0, .14); stroke: currentColor; stroke-width: 1.6; opacity: .55; stroke-dasharray: 3 3.5; }
+.gc-emblem-plate { fill: currentColor; }
+.gc-emblem-bar { fill: currentColor; opacity: .85; }
+.gc-emblem-knurl { stroke: var(--gc-chip); stroke-width: .9; opacity: .7; }
+.gc-emblem-shine { stroke: var(--gc-chip); stroke-width: 1.6; stroke-linecap: round; opacity: .8; }
+.gc-apex .gc-emblem { color: #fff; }
+.gc-apex .gc-emblem-plate { fill: url(#gc-holo); }
+.gc-apex .gc-emblem { filter: drop-shadow(0 0 8px rgba(255, 43, 214, .7)) drop-shadow(0 0 3px rgba(0, 229, 255, .8)); }
+.gc-apex .gc-emblem-ring { stroke: #ffe600; opacity: .7; animation: gc-ring 8s linear infinite; transform-origin: 32px 32px; }
+.gc-diamond .gc-emblem { filter: drop-shadow(0 0 8px rgba(110, 210, 255, .6)); }
+@keyframes gc-ring { to { transform: rotate(360deg); } }
+.gc-streak { display: flex; align-items: center; gap: calc(var(--w) * .03); }
+.gc-num {
+  position: relative;
+  font-weight: 700;
+  font-size: calc(var(--w) * .25);
+  line-height: .78;
+  letter-spacing: -.01em;
+  text-shadow: var(--gc-emboss);
+}
+.gc-numlabel { font-weight: 600; font-size: calc(var(--w) * .036); line-height: 1.12; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.gc-name {
+  font-weight: 600;
+  font-size: calc(var(--w) * .058);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-shadow: var(--gc-emboss);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 42%;
+}
+.gc-stats { display: flex; gap: calc(var(--w) * .04); }
+.gc-stats span { display: flex; flex-direction: column; align-items: flex-end; font-size: calc(var(--w) * .026); letter-spacing: .14em; text-transform: uppercase; opacity: .78; }
+.gc-stats b { font-weight: 700; font-size: calc(var(--w) * .052); letter-spacing: .02em; line-height: 1; opacity: 1; }
+
+/* ---------- Tier materials ---------- */
+.gc-bronze, .tier-dot-bronze {
+  --gc-bg: linear-gradient(125deg, #3d200e 0%, #7f431d 20%, #c98450 40%, #f0bd94 50%, #b06a36 62%, #5a2f14 84%, #351a09 100%);
+  --gc-ink: #fff4ea;
+  --gc-chip: #e3ad80;
+  --gc-emboss: 0 1px 0 rgba(255, 220, 190, .35), 0 -1px 0 rgba(40, 15, 0, .55);
+}
+.gc-silver, .tier-dot-silver {
+  --gc-bg: linear-gradient(125deg, #474c54 0%, #949ba5 20%, #e3e7ec 42%, #ffffff 50%, #b6bdc6 61%, #6a7079 84%, #3c4148 100%);
+  --gc-ink: #15181c;
+  --gc-chip: #dfe3e8;
+  --gc-emboss: 0 1px 0 rgba(255, 255, 255, .7), 0 -1px 0 rgba(0, 0, 0, .25);
+}
+.gc-gold, .tier-dot-gold {
+  --gc-bg: linear-gradient(125deg, #4a3105 0%, #a3731a 20%, #ecc865 42%, #fff2bd 50%, #d4a23a 61%, #87590e 84%, #452c03 100%);
+  --gc-ink: #261700;
+  --gc-chip: #f6da82;
+  --gc-emboss: 0 1px 0 rgba(255, 245, 200, .65), 0 -1px 0 rgba(60, 35, 0, .35);
+}
+.gc-platinum, .tier-dot-platinum {
+  --gc-bg: linear-gradient(125deg, #222c37 0%, #6a7e93 20%, #c6d6e5 42%, #f6fbff 50%, #a7bbcf 61%, #4a5c70 84%, #1c242e 100%);
+  --gc-ink: #0d1520;
+  --gc-chip: #e1ebf5;
+  --gc-emboss: 0 1px 0 rgba(255, 255, 255, .7), 0 -1px 0 rgba(0, 20, 40, .3);
+}
+.gc-platinum .gc-grain {
+  background:
+    linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .55) 48%, transparent 60%) no-repeat,
+    repeating-linear-gradient(100deg, rgba(255, 255, 255, .06) 0 1px, transparent 1px 3px);
+  background-size: 300% 100%, auto;
+  animation: gc-sweep 5s ease-in-out infinite;
+}
+@keyframes gc-sweep {
+  0% { background-position: 120% 0, 0 0; }
+  60%, 100% { background-position: -40% 0, 0 0; }
+}
+.gc-diamond, .tier-dot-diamond {
+  --gc-bg: radial-gradient(120% 90% at 18% 8%, #15497a 0%, #082039 50%, #030b16 100%);
+  --gc-ink: #ecf9ff;
+  --gc-chip: #a5e6ff;
+  --gc-emboss: 0 0 18px rgba(110, 210, 255, .45);
+}
+.gc-diamond .gc-foil {
+  background:
+    repeating-conic-gradient(from 20deg at 70% 40%, rgba(255, 255, 255, .06) 0deg 8deg, transparent 8deg 22deg),
+    conic-gradient(from var(--gc-angle) at 60% 40%, rgba(110, 220, 255, 0), rgba(110, 220, 255, .38), rgba(190, 150, 255, .32), rgba(110, 255, 210, .3), rgba(110, 220, 255, 0));
+  mix-blend-mode: screen;
+  animation: gc-spin 9s linear infinite;
+}
+.gc-diamond .gc-tier { text-shadow: 0 0 14px rgba(120, 220, 255, .8); }
+
+/* ---------- APEX: the final card ---------- */
+.gc-apex, .tier-dot-apex {
+  --gc-bg: radial-gradient(130% 100% at 28% 0%, #241540 0%, #0a0714 48%, #020204 100%);
+  --gc-ink: #ffffff;
+  --gc-chip: #f5f5f5;
+  --gc-emboss: none;
+}
+.gc-apex::before {
+  content: '';
+  position: absolute;
+  inset: -2.5px;
+  border-radius: calc(var(--w) * .055 + 2.5px);
+  background: conic-gradient(from var(--gc-angle), #ff2bd6, #7a5cff, #00e5ff, #39ff88, #ffe600, #ff6a00, #ff2bd6);
+  animation: gc-spin 3.5s linear infinite;
+}
+.gc-apex .gc-aura {
+  inset: -9%;
+  background: conic-gradient(from var(--gc-angle), #ff2bd6, #7a5cff, #00e5ff, #39ff88, #ffe600, #ff6a00, #ff2bd6);
+  filter: blur(34px);
+  opacity: .55;
+  transform: translateZ(-60px);
+  animation: gc-spin 3.5s linear infinite, gc-pulse 2.4s ease-in-out infinite;
+}
+.gc-apex .gc-foil {
+  background: linear-gradient(115deg, transparent 18%, rgba(255, 43, 214, .42) 32%, rgba(0, 229, 255, .42) 44%, rgba(57, 255, 136, .36) 56%, rgba(255, 230, 0, .36) 68%, transparent 82%);
+  background-size: 260% 260%;
+  background-position: var(--mx) var(--my);
+  mix-blend-mode: color-dodge;
+  opacity: .75;
+  animation: gc-holo 6s ease-in-out infinite;
+}
+.gc-apex .gc-grain {
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .035) 0 1px, transparent 1px 3px),
+    radial-gradient(circle at 80% 120%, rgba(122, 92, 255, .35), transparent 55%);
+  mix-blend-mode: screen;
+}
+.gc-apex .gc-num {
+  background: linear-gradient(90deg, #ff2bd6, #00e5ff, #39ff88, #ffe600, #ff6a00, #ff2bd6);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 14px rgba(255, 43, 214, .55));
+  animation: gc-hue 4s linear infinite;
+}
+.gc-apex .gc-num::before,
+.gc-apex .gc-num::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  -webkit-background-clip: initial;
+  background: none;
+  pointer-events: none;
+}
+.gc-apex .gc-num::before { color: rgba(0, 229, 255, .8); animation: gc-glitch-a 3.2s steps(1) infinite; }
+.gc-apex .gc-num::after { color: rgba(255, 43, 214, .8); animation: gc-glitch-b 3.2s steps(1) infinite; }
+.gc-apex .gc-tier {
+  background: linear-gradient(90deg, #fff, #ffe600, #ff2bd6, #00e5ff, #fff);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gc-hue 3s linear infinite;
+  letter-spacing: .3em;
+}
+.gc-apex .gc-tier .gc-mark { stroke: #ffe600; filter: drop-shadow(0 0 6px #ff2bd6); }
+.gc-apex .gc-name { text-shadow: 0 0 12px rgba(255, 255, 255, .5); }
+
+@keyframes gc-spin { to { --gc-angle: 360deg; } }
+@keyframes gc-pulse { 0%, 100% { opacity: .4; } 50% { opacity: .75; } }
+@keyframes gc-holo { 0%, 100% { background-position: 0% 30%; } 50% { background-position: 100% 70%; } }
+@keyframes gc-hue { to { background-position: 300% 0; } }
+@keyframes gc-glitch-a {
+  0%, 88%, 100% { transform: none; clip-path: inset(0 0 100% 0); }
+  89% { transform: translate(-3px, 1px); clip-path: inset(10% 0 55% 0); }
+  92% { transform: translate(3px, -1px); clip-path: inset(60% 0 8% 0); }
+  95% { transform: translate(-2px, 0); clip-path: inset(30% 0 40% 0); }
+}
+@keyframes gc-glitch-b {
+  0%, 89%, 100% { transform: none; clip-path: inset(0 0 100% 0); }
+  90% { transform: translate(3px, -1px); clip-path: inset(50% 0 20% 0); }
+  93% { transform: translate(-3px, 1px); clip-path: inset(5% 0 70% 0); }
+  96% { transform: translate(2px, 0); clip-path: inset(70% 0 5% 0); }
+}
+
+/* Sparks rising through the card (diamond and apex) */
+.gc-sparks { overflow: hidden; }
+.gc-sparks span {
+  position: absolute;
+  bottom: -6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px 2px rgba(0, 229, 255, .8);
+  opacity: 0;
+  animation: gc-rise 4s linear infinite;
+}
+.gc-apex .gc-sparks span:nth-child(3n) { box-shadow: 0 0 6px 2px rgba(255, 43, 214, .9); }
+.gc-apex .gc-sparks span:nth-child(3n + 1) { box-shadow: 0 0 6px 2px rgba(255, 230, 0, .85); }
+@keyframes gc-rise {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(calc(var(--w) * -.68)) scale(.3); opacity: 0; }
+}
+.gc-apex + .gc-shadow, .gc-stage:has(.gc-apex) .gc-shadow { background: radial-gradient(closest-side, rgba(255, 43, 214, .45), transparent); }
+
+/* ---------- Locked preview ---------- */
+.gc-locked .gc-material { filter: grayscale(1) brightness(.32); }
+.gc-locked .gc-foil, .gc-locked .gc-sparks, .gc-locked .gc-aura, .gc-locked::before { opacity: .18; filter: grayscale(.6); }
+.gc-locked .gc-content { filter: blur(3px); opacity: .45; }
+.gc-locked { color: #e6e6e6; }
+.gc-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transform: translateZ(50px);
+  color: #fff;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--w) * .05);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.gc-lock svg { width: calc(var(--w) * .1); height: calc(var(--w) * .1); stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ===== Level-up reveal ===== */
+.lu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  background: rgba(3, 3, 6, .9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  animation: fade-in 300ms ease-out;
+}
+.lu-rays {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 220vmax;
+  height: 220vmax;
+  margin: -110vmax 0 0 -110vmax;
+  background: repeating-conic-gradient(from 0deg, var(--lu-ray) 0deg 6deg, transparent 6deg 18deg);
+  mask-image: radial-gradient(circle, #000 0%, transparent 45%);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 45%);
+  opacity: .55;
+  animation: lu-rays 24s linear infinite;
+}
+@keyframes lu-rays { to { transform: rotate(360deg); } }
+.lu-flash { position: absolute; inset: 0; background: #fff; opacity: 0; animation: lu-flash 900ms ease-out; pointer-events: none; }
+@keyframes lu-flash { 0% { opacity: .9; } 100% { opacity: 0; } }
+.lu-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: .4em; text-transform: uppercase; color: rgba(255, 255, 255, .7); font-size: 14px; animation: lu-up 600ms 200ms both cubic-bezier(.2, .8, .2, 1); }
+.lu-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: clamp(56px, 18vw, 96px);
+  line-height: .9;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: center;
+  animation: lu-slam 700ms 350ms both cubic-bezier(.2, 1.4, .3, 1);
+}
+.lu-apex .lu-title {
+  background: linear-gradient(90deg, #ff2bd6, #00e5ff, #39ff88, #ffe600, #ff6a00, #ff2bd6);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(255, 43, 214, .6));
+  animation: lu-slam 700ms 350ms both cubic-bezier(.2, 1.4, .3, 1), gc-hue 3s linear infinite;
+}
+.lu-card { animation: lu-card 1500ms 150ms both cubic-bezier(.16, 1, .3, 1); }
+@keyframes lu-card {
+  0% { transform: perspective(1100px) rotateY(-720deg) scale(.2); opacity: 0; }
+  60% { opacity: 1; }
+  100% { transform: perspective(1100px) rotateY(0) scale(1); opacity: 1; }
+}
+@keyframes lu-slam { 0% { transform: scale(2.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes lu-up { 0% { transform: translateY(14px); opacity: 0; } 100% { transform: none; opacity: 1; } }
+.lu-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.lu-confetti span {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: lu-fall linear infinite;
+}
+@keyframes lu-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(115vh) rotate(720deg); opacity: .9; }
+}
+.lu-sub { color: rgba(255, 255, 255, .75); text-align: center; max-width: 30ch; font-size: 15px; animation: lu-up 600ms 900ms both cubic-bezier(.2, .8, .2, 1); }
+.lu-btn { animation: lu-up 600ms 1100ms both cubic-bezier(.2, .8, .2, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .gc-float, .gc-shadow { animation: none !important; }
+  .gc-card { transition: none !important; }
+}
+
+/* Tier swatches in the card list */
+.tier-dot { width: 30px; height: 30px; flex-shrink: 0; border-radius: 9px; background: var(--gc-bg); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 0 0 1px rgba(255,255,255,.06); }
+.tier-dot-apex { background: conic-gradient(from 0deg, #ff2bd6, #7a5cff, #00e5ff, #39ff88, #ffe600, #ff6a00, #ff2bd6); }
